@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             } else {
                 mGame?.reconnect(url)
             }
-            Retrofit.Builder().baseUrl(mGame!!.url)
+            service = Retrofit.Builder().baseUrl(mGame!!.url)
                     .addConverterFactory(MoshiConverterFactory.create())
                     .build()
                     .create(APICall::class.java)
