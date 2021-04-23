@@ -1,6 +1,7 @@
 package com.example.tictactoe
 
 import android.util.Log
+import android.widget.Toast
 import com.google.gson.Gson
 import org.json.JSONObject
 import java.net.URISyntaxException
@@ -17,6 +18,7 @@ class GameService private constructor(url: String?) {
 
     var onStartListener: (() -> Unit)? = null
     var onMoveListener: (() -> Unit)? = null
+    var toast: ((String) -> Unit)? = null
 
     init {
         try {
@@ -36,13 +38,27 @@ class GameService private constructor(url: String?) {
         socket?.connect()
     }
 
+    fun reconnect(url: String) {
+        socket?.disconnect()
+        socket?.close()
+        try {
+            socket = IO.socket(url)
+            connect()
+        } catch (e: URISyntaxException) {
+            e.printStackTrace()
+        }
+    }
+
     private val onError: Emitter.Listener = Emitter.Listener { args ->
         val data = args[0] as EngineIOException
         Log.d("socket.event.error", data.cause.toString())
+        val start = data.cause.toString().indexOf(" ")
+        toast?.invoke(data.cause.toString().substring(start + 1))
     }
 
     private val onConnect: Emitter.Listener = Emitter.Listener {
         Log.d("socket.event.connect", "new connection")
+        toast?.invoke("Live Connection Established")
     }
 
     private val onUserJoin: Emitter.Listener = Emitter.Listener { args ->
