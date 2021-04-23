@@ -12,13 +12,12 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 class GameActivity : AppCompatActivity() {
-    private val url: String = Constants.serverUrl
+    private val game = GameService.getInstance()
     private val service: APICall = Retrofit.Builder()
-        .baseUrl(url)
+        .baseUrl(game.url)
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
         .create(APICall::class.java)
-    private val game = GameService.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

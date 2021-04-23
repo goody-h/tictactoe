@@ -11,7 +11,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 class MainActivity : AppCompatActivity() {
     private val url: String = Constants.serverUrl
-    private val service: APICall = Retrofit.Builder()
+    private var service: APICall = Retrofit.Builder()
         .baseUrl(url)
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
@@ -40,6 +40,10 @@ class MainActivity : AppCompatActivity() {
             } else {
                 mGame?.reconnect(url)
             }
+            Retrofit.Builder().baseUrl(mGame!!.url)
+                    .addConverterFactory(MoshiConverterFactory.create())
+                    .build()
+                    .create(APICall::class.java)
         }
     }
 

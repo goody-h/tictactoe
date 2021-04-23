@@ -10,7 +10,7 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter
 import io.socket.engineio.client.EngineIOException
 
-class GameService private constructor(url: String?) {
+class GameService private constructor(var url: String) {
     var socket: Socket? = null
     var filter: String? = null
     var status: PlayStatus? = null
@@ -41,6 +41,7 @@ class GameService private constructor(url: String?) {
     fun reconnect(url: String) {
         socket?.disconnect()
         socket?.close()
+        this.url = url
         try {
             socket = IO.socket(url)
             connect()
@@ -93,7 +94,7 @@ class GameService private constructor(url: String?) {
         private var instance: GameService? = null
 
         fun getInstance(url: String? = null): GameService {
-            if (instance == null){
+            if (instance == null && url != null){
                 instance =
                     GameService(url);
             }
